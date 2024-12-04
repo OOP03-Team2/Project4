@@ -31,5 +31,7 @@
 *.out
 *.app
 
-# Pyhton dependencies
+# Python dependencies
 myenv/
+*.py
+.vscode/
