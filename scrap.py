@@ -149,11 +149,11 @@ leagues = [
 ]
 for league in leagues:
     data = extract_prediction_data(driver, league[0])
-    save_to_csv("prediced_table.csv", data, league[0])    
+    save_to_csv("src/prediced_table.csv", data, league[0])    
 time.sleep(1)
 for league in leagues:
     data = extract_table_data(driver, league[1])
-    save_to_csv("current_table.csv", data, league[1])
+    save_to_csv("src/current_table.csv", data, league[1])
 
 driver.quit()
 print("Data extraction and CSV writing completed!")
