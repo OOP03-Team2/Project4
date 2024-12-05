@@ -3,7 +3,7 @@
 #include <cctype> // For std::isdigit()
 #include "team.h"
 #include "table.h"
-#define FOOTBALL 5 // PL, SerieA, Laliga, Bundes, Ligue1
+#define FOOTBALL 5 // PL, Serie-A, La liga, Bundesliga, and Ligue 1
 
 using namespace std;
 

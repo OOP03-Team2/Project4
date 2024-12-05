@@ -16,11 +16,11 @@ private:
 
 public:
     team();
+    ~team();
     int getPos() { return position; }
     void createStats(int pos, std::string, int p, int w, int d, int l, int gf, int ga, int pts, float xPts);
     void createProb(int, float);
     void printStats(char);
-    ~team();
 };
 
 #endif
