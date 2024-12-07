@@ -50,7 +50,7 @@ void Team::createStats(int pos, string name, int w, int l, float wP, string gb, 
 
     streak = str, last10 = l10;
 }
-void Team::createProb(int n, int pos, std::string name, float stat)
+void Team::createProb(int n, int pos, string name, float stat)
 {
     position = pos;
     this->name = name;
@@ -67,7 +67,7 @@ void Team::printStats(char option)
     if (points >= 0)
     {
         cout << right << setw(2) << position << "  "
-             << left << setw(15) << name;
+             << left << setw(17) << name;
 
         // 's' means simple
         if (option == 's')
@@ -86,7 +86,10 @@ void Team::printStats(char option)
             cout << setw(4) << showpos << gd
                  << setw(5) << noshowpos << points;
             if (option == 'x')
-                cout << right << setw(7) << fixed << setprecision(2) << xPoints;
+                if (predictedPos[0] < .0f)
+                    cout << right << setw(8) << fixed << setprecision(1) << xPoints;
+                else
+                    cout << right << setw(8) << fixed << setprecision(2) << xPoints;
         }
 
         // 'p' means predicted
@@ -116,7 +119,7 @@ void Team::printStats(char option)
             cout << left << setw(22) << name
                  << right << setw(3) << win
                  << setw(3) << loss
-                 << setw(6) << fixed << setprecision(3) << winPercent;
+                 << setw(7) << fixed << setprecision(3) << winPercent;
         }
         // 'v' means verbose
         else if (option == 'v')
@@ -128,7 +131,7 @@ void Team::printStats(char option)
                  << setw(7) << fixed << setprecision(1) << teamPpg
                  << setw(8) << fixed << setprecision(1) << oppPpg;
             cout << setw(9) << fixed << setprecision(1) << showpos << difPpg;
-            cout << setw(5) << noshowpos << streak << setw(8) << last10;
+            cout << setw(6) << noshowpos << streak << setw(8) << last10;
         }
 
         // 'p' means predicted
@@ -142,7 +145,7 @@ void Team::printStats(char option)
             cout << setw(7) << fixed << setprecision(1) << showpos << predictedStat[4];
 
             // Probability about PlayOffs
-            cout << setw(8) << fixed << setprecision(1) << noshowpos << predictedStat[5] << "%"
+            cout << setw(9) << fixed << setprecision(1) << noshowpos << predictedStat[5] << "%"
                  << setw(9) << fixed << setprecision(1) << predictedStat[6] << "%"
                  << setw(8) << fixed << setprecision(1) << predictedStat[7] << "%"
                  << setw(10) << fixed << setprecision(1) << predictedStat[8] << "%"

@@ -17,7 +17,7 @@ private:
      */
     int gf, ga, gd;         // gf: Goals For, ga: Goals Against, gd: Goal difference
     int points = -1;        // current Points
-    float xPoints;          // Expected Points at the end of the season
+    float xPoints;          // Expected Points at the end of the season. Or odds.
     float predictedPos[20]; // probability to end up that Position. For example, xPosition[0] means the probability to end up 1st.
 
     /*
@@ -29,9 +29,6 @@ private:
     float teamPpg, oppPpg, difPpg;     // Points Per Game by itself, by opponent and difference
     std::string streak, last10;        // consecutive win/lose, and recent performance
     float predictedStat[10];           // xWin, xLoss, Offersive / Defensive / Net Rating and Probability to make Playoffs / Conf SF / Conf F / Finals / Champion
-
-    /* TBA; Bet odd to be winner of league. Form would be: 1.15, 4.56, 16 */
-    float odd;
 
 public:
     Team();

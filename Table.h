@@ -8,7 +8,7 @@ class Table
 private:
     std::string leagueName;
     int teamCount = 0;
-    Team team[30]; // Can be changed to dynamic allocation or vector: new team[teamCount], vector<team>
+    Team team[36]; // Can be changed to dynamic allocation or vector: new team[teamCount], vector<team>
 
 public:
     Table();
@@ -18,10 +18,8 @@ public:
     int getTeamCount() { return teamCount; }
     void incrementTeamCount() { teamCount++; }
 
-    // for Top 5 league
+    // for Football
     void addFootTeam(int, std::string);
-    // for Uefa Champions League
-    void addFootTeam(std::string);
     void addProb(int, std::string);
 
     // for Basketball

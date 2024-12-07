@@ -48,9 +48,11 @@ void Table::addFootTeam(int index, string line)
     // 10. Current points
     getline(ss, pts_str, ',');
     int pts = stoi(pts_str);
-    // 11. Expected points
+    // 11. Expected points or Odds
     getline(ss, xPts_str, ',');
     float xPts = stof(xPts_str);
+    if (xPts < 10)
+        xPts += 1;
 
     team[index].createStats(pos, name, p, w, d, l, gf, ga, pts, xPts);
 }
@@ -148,9 +150,9 @@ void Table::addProb(string line, int index)
 
 void Table::printTable(char option)
 {
-    cout << "===================================================\n"
+    cout << "=======================================================\n"
          << leagueName << "\n"
-         << "---------------------------------------------------\n";
+         << "-------------------------------------------------------\n";
 
     /*
      * Football
@@ -163,7 +165,7 @@ void Table::printTable(char option)
     if (teamCount == 20 || teamCount == 18 || teamCount == 36)
     {
         cout << right << setw(3) << "POS "
-             << left << setw(15) << "TEAM";
+             << left << setw(17) << "TEAM";
 
         // 's' means simple
         if (option == 's')
@@ -176,7 +178,10 @@ void Table::printTable(char option)
                  << setw(4) << "GF" << setw(3) << "GA" << setw(4) << "GD"
                  << setw(5) << "PTS";
             if (option == 'x')
-                cout << setw(7) << "xPTS";
+                if (teamCount == 36)
+                    cout << setw(8) << "Bet Odd";
+                else
+                    cout << setw(7) << "xPTS";
         }
 
         // 'p' means predicted
@@ -194,6 +199,10 @@ void Table::printTable(char option)
             cout << "\n";
             team[i].printStats(option);
         }
+
+        // Detail for stats
+        if (teamCount == 36 && option == 'x')
+            cout << "\n\n*Bet Odds are referred from bet365.";
     }
 
     /*
@@ -211,7 +220,7 @@ void Table::printTable(char option)
         if (option == 's')
             cout << left << setw(22) << "TEAM"
                  << right << setw(3) << "W" << setw(3) << "L"
-                 << setw(6) << "WIN%";
+                 << setw(7) << "WIN%";
 
         // 'v' means verbose
         else if (option == 'v')
@@ -219,7 +228,7 @@ void Table::printTable(char option)
             cout << left << setw(22) << "TEAM"
                  << right << setw(3) << "PL" << setw(3) << "W" << setw(3) << "L"
                  << setw(5) << "GB" << setw(6) << "HOME" << setw(6) << "ROAD" << setw(6) << "DIV" << setw(6) << "CONF"
-                 << setw(7) << "PPG" << setw(8) << "OPP.PPG" << setw(9) << "PPG DIF."
+                 << setw(7) << "PPG" << setw(8) << "OPP.PPG" << setw(10) << "PPG DIF."
                  << setw(5) << "STRK" << setw(8) << "LAST 10";
         }
 
@@ -228,7 +237,7 @@ void Table::printTable(char option)
         {
             cout << left << setw(13) << "TEAM"
                  << right << setw(6) << "xWINS" << setw(6) << "xLOSS"
-                 << setw(7) << "OFF R." << setw(7) << "DEF R." << setw(7) << "NET R."
+                 << setw(8) << "OFF R." << setw(7) << "DEF R." << setw(7) << "NET R."
                  << setw(9) << "MAKE PO" << setw(10) << "MAKE CSF" << setw(9) << "MAKE CF"
                  << setw(13) << "MAKE FINALS" << setw(7) << "WIN";
         }
@@ -243,8 +252,9 @@ void Table::printTable(char option)
         if (option == 'v')
             cout << "\n\n*GB: Games Behind, *PPG: Points Per Game, *STRK: Streak";
         else if (option == 'p')
-            cout << "\n\n*R.: Rating, *CF: Conference Final";
+            cout << "\n\n*R.: Rating, *PO: Playoff, *C(S)F: Conference (Semi-)Final";
     }
 
-    cout << "\n===================================================\n\n";
+    cout << "\n=======================================================\n"
+         << endl;
 }
