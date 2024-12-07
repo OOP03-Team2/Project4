@@ -19,7 +19,7 @@ int main()
     int ret1 = system("./scrap_football");
     int ret2 = system("./scrap_football");
 #else
-    std::cerr << "Unsupported OS!" << std::endl;
+    cerr << "Unsupported OS!" << endl;
     return 1;
 #endif
     if (ret1 || ret2)
