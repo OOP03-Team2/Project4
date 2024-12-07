@@ -27,11 +27,16 @@
 *.lib
 
 # Executables
-*.exe
+#*.exe
 *.out
 *.app
 
-# Python dependencies
+# My dependencies
 myenv/
+build/
+dist/
+*.spec
 *.py
 .vscode/
+scrap_football
+scrap_basketball

@@ -1,3 +1,4 @@
+#include <cstdlib> // For system()
 #include <iostream>
 #include <fstream>
 #include <cctype> // For std::isdigit()
@@ -10,17 +11,24 @@ using namespace std;
 
 int main()
 {
-    // // Run the Python script and check its exit status
-    // int return_code1 = system("./myenv/bin/python3.12 ./scrap_football.py");
-    // int return_code2 = system("./myenv/bin/python3.12 ./scrap_basketball.py");
-
-    // if (return_code1 || return_code2)
-    // {
-    //     cout << "Python script failed with exit code: " << return_code1 << endl;
-    //     cout << "Python script failed with exit code: " << return_code2 << endl;
-    //     return 1;
-    // }
-    // cout << "Python script executed successfully!" << endl;
+    // Run the Python script and check its exit status
+#ifdef _WIN32 // Windows
+    int ret1 = system(".\scrap_football.exe");
+    int ret2 = system(".\scrap_basketball.exe");
+#elif __linux__ // Linux
+    int ret1 = system("./scrap_football");
+    int ret2 = system("./scrap_football");
+#else
+    std::cerr << "Unsupported OS!" << std::endl;
+    return 1;
+#endif
+    if (ret1 || ret2)
+    {
+        cout << "Python script failed with exit code: " << ret1 << endl;
+        cout << "Python script failed with exit code: " << ret2 << endl;
+        return 1;
+    }
+    cout << "Python script executed successfully!" << endl;
 
     ifstream data1("./table_football_current.csv");
     ifstream data2("./table_football_predicted.csv");
