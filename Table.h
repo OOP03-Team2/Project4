@@ -24,7 +24,11 @@ public:
 
     // for Basketball
     void addBasketTeam(int, std::string);
-    void addProb(std::string, int index);
+    void addProb(std::string, int);
+
+    // for A. Football
+    void addHandTeam(int, std::string);
+    void addProb(std::string, int, int);
 
     void printTable(char);
 };

@@ -6,10 +6,11 @@ using namespace std;
 
 Team::Team()
 {
-    // Initalize probability of each position to -1, meaning to end up that position is impossible.
-    int count = sizeof(predictedPos) / sizeof(predictedPos[0]);
+    int count = sizeof(predictedStat) / sizeof(predictedStat[0]);
     for (int i = 0; i < count; i++)
-        predictedPos[i] = -1.f;
+    {
+        predictedStat[i] = -1.f;
+    }
 }
 
 Team::~Team()
@@ -44,7 +45,7 @@ void Team::createStats(int pos, string name, int w, int l, float wP, string gb, 
     winPercent = wP;
 
     this->gb = gb;
-    home = h, road = r, this->div = div, this->conf = conf;
+    home = h, road = r, division = div, conference = conf;
 
     teamPpg = ppg, oppPpg = oppg, difPpg = dppg;
 
@@ -55,6 +56,28 @@ void Team::createProb(int n, int pos, string name, float stat)
     position = pos;
     this->name = name;
     predictedStat[n] = stat;
+}
+
+void Team::createStats(int pos, string name, int w, int l, int t, float wP, int gf, int ga, string h, string r, string div, string conf, string str, string l5)
+{
+    position = pos;
+    this->name = name;
+
+    win = w, loss = l, draw = t;
+    played = w + l + t;
+
+    winPercent = wP;
+
+    this->gf = gf, this->ga = ga, gd = gf - ga;
+
+    home = h, road = r, division = div, conference = conf;
+    streak = str, last5 = l5;
+}
+void Team::createProb(int pos, string name, float stat, int n)
+{
+    position = pos;
+    this->name = name;
+    pStat[n] = stat;
 }
 
 void Team::printStats(char option)
@@ -109,7 +132,7 @@ void Team::printStats(char option)
      * Function to print stats of basketball team.
      */
 
-    else if (winPercent >= .0f || predictedStat[0] >= .0f)
+    else if (teamPpg >= 1.f || predictedStat[0] >= .0f)
     {
         cout << right << setw(2) << position << "  ";
 
@@ -127,7 +150,7 @@ void Team::printStats(char option)
             cout << left << setw(22) << name
                  << right << setw(3) << played << setw(3) << win << setw(3) << loss
                  << setw(5) << gb
-                 << setw(6) << home << setw(6) << road << setw(6) << div << setw(6) << conf
+                 << setw(6) << home << setw(6) << road << setw(6) << division << setw(6) << conference
                  << setw(7) << fixed << setprecision(1) << teamPpg
                  << setw(8) << fixed << setprecision(1) << oppPpg;
             cout << setw(9) << fixed << setprecision(1) << showpos << difPpg;
@@ -150,6 +173,49 @@ void Team::printStats(char option)
                  << setw(8) << fixed << setprecision(1) << predictedStat[7] << "%"
                  << setw(10) << fixed << setprecision(1) << predictedStat[8] << "%"
                  << setw(8) << fixed << setprecision(1) << predictedStat[9] << "%";
+        }
+    }
+
+    /*
+     * American Football
+     * Function to print stats of A. football team.
+     */
+
+    else
+    {
+        cout << right << setw(2) << position << "  ";
+
+        // 's' means simple
+        if (option == 's')
+        {
+            cout << left << setw(11) << name
+                 << right << setw(3) << win
+                 << setw(3) << loss
+                 << setw(7) << fixed << setprecision(3) << winPercent;
+        }
+        // 'v' means verbose
+        else if (option == 'v')
+        {
+            cout << left << setw(11) << name
+                 << right << setw(3) << played << setw(3) << win << setw(3) << loss << setw(7) << fixed << setprecision(3) << winPercent
+                 << setw(4) << gf << setw(4) << ga << setw(6) << showpos << gd;
+            cout << noshowpos << setw(8) << home << setw(7) << road << setw(7) << division << setw(7) << conference
+                 << setw(5) << streak << setw(8) << last5;
+        }
+
+        // 'p' means predicted
+        else if (option == 'p')
+        {
+            cout << left << setw(11) << name
+                 << right << setw(6) << fixed << setprecision(1) << pStat[0]
+                 << setw(6) << fixed << setprecision(1) << pStat[1];
+
+            // Probability about PlayOffs
+            cout << setw(8) << fixed << setprecision(1) << pStat[2] << "%"
+                 << setw(9) << fixed << setprecision(1) << noshowpos << pStat[3] << "%"
+                 << setw(8) << fixed << setprecision(1) << pStat[4] << "%"
+                 << setw(11) << fixed << setprecision(1) << pStat[5] << "%"
+                 << setw(6) << fixed << setprecision(1) << pStat[6] << "%";
         }
     }
 }

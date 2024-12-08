@@ -96,10 +96,55 @@ void Table::addBasketTeam(int index, std::string line)
     float dppg = stof(dppg_str);
     // 14. results from its conference
     getline(ss, str, ',');
-    // 15. PPG
+    // 15. Last 10
     getline(ss, l10, ',');
 
     team[index].createStats(pos, name, w, l, wp, gb, home, road, div, conf, ppg, oppg, dppg, str, l10);
+}
+void Table::addHandTeam(int index, std::string line)
+{
+    stringstream ss(line);
+    string pos_str, name, w_str, l_str, t_str, wp_str, gf_str, ga_str, gd_str, h, r, div, conf, str, l5;
+
+    // 1. Position
+    getline(ss, pos_str, ',');
+    int pos = stoi(pos_str);
+    // 2. Team name
+    getline(ss, name, ',');
+    // 3. Wins
+    getline(ss, w_str, ',');
+    int w = stoi(w_str);
+    // 4. Loss
+    getline(ss, l_str, ',');
+    int l = stoi(l_str);
+    // 5. Ties
+    getline(ss, t_str, ',');
+    int t = stoi(t_str);
+    // 6. Win Percentage
+    getline(ss, wp_str, ',');
+    float wp = stof(wp_str);
+    // 7. Total Points For
+    getline(ss, gf_str, ',');
+    int gf = stoi(gf_str);
+    // 8. Total Points Against
+    getline(ss, ga_str, ',');
+    int ga = stoi(ga_str);
+    // 9. Total Points Difference
+    getline(ss, gd_str, ',');
+    // 10. results at Home
+    getline(ss, h, ',');
+    // 11. results on road
+    getline(ss, r, ',');
+    // 12. results from its divison
+    getline(ss, div, ',');
+    // 13. results from its conference
+    getline(ss, conf, ',');
+    // 14. Streak
+    getline(ss, str, ',');
+    // 15. Last 5
+    getline(ss, l5, ',');
+
+    team[index].createStats(pos, name, w, l, t, wp, gf, ga, h, r, div, conf, str, l5);
 }
 
 void Table::addProb(int index, string line)
@@ -139,12 +184,35 @@ void Table::addProb(string line, int index)
     getline(ss, name, ',');
 
     // 3. Predicted stats
-    int count = sizeof(stat_str) / sizeof(stat_str[0]);
-    for (int n = 0; n < count; n++)
+    for (int n = 0; n < 10; n++)
     {
         getline(ss, stat_str[n], ',');
         float stat = stof(stat_str[n]);
         team[index].createProb(n, pos, name, stat);
+    }
+}
+void Table::addProb(string line, int index, int nothing)
+{
+    // nothing for American football
+    stringstream ss(line);
+    string pos_str, name, assoc, stat_str[7];
+
+    // 1. Position
+    getline(ss, pos_str, ',');
+    int pos = stoi(pos_str);
+
+    // 2. Team name
+    getline(ss, name, ',');
+
+    // 3. Association
+    getline(ss, assoc, ',');
+
+    // 4. Predicted stats
+    for (int n = 0; n < 7; n++)
+    {
+        getline(ss, stat_str[n], ',');
+        float stat = stof(stat_str[n]);
+        team[index].createProb(pos, name, stat, n);
     }
 }
 
@@ -253,6 +321,49 @@ void Table::printTable(char option)
             cout << "\n\n*GB: Games Behind, *PPG: Points Per Game, *STRK: Streak";
         else if (option == 'p')
             cout << "\n\n*R.: Rating, *PO: Playoff, *C(S)F: Conference (Semi-)Final";
+    }
+
+    /*
+     * American Football
+     * Function to print table of A. Football team.
+     * teamCount == 4 -> Each Division
+     * teamCount == 16 -> American and National Coference
+     * teamCount == 32 -> Combined
+     */
+    else if (teamCount == 4 || teamCount == 16 || teamCount == 32)
+    {
+        cout << right << setw(3) << "POS ";
+
+        // 's' means simple
+        if (option == 's')
+            cout << left << setw(11) << "TEAM"
+                 << right << setw(3) << "W" << setw(3) << "L"
+                 << setw(7) << "WIN%";
+
+        // 'v' means verbose
+        else if (option == 'v')
+        {
+            cout << left << setw(11) << "TEAM"
+                 << right << setw(3) << "PL" << setw(3) << "W" << setw(3) << "L" << setw(7) << "WIN%"
+                 << setw(4) << "PF" << setw(4) << "PA" << setw(7) << "Net P."
+                 << setw(7) << "HOME" << setw(7) << "ROAD" << setw(7) << "DIV" << setw(7) << "CONF"
+                 << setw(5) << "STRK" << setw(8) << "LAST 5";
+        }
+
+        // 'p' means predicted
+        else if (option == 'p')
+        {
+            cout << left << setw(11) << "TEAM"
+                 << right << setw(6) << "xWINS" << setw(6) << "xLOSS"
+                 << setw(9) << "MAKE PO" << setw(10) << "WIN DIV" << setw(9) << "MAKE CF"
+                 << setw(13) << "SUPER BOWLS" << setw(6) << "WIN";
+        }
+
+        for (int i = 0; i < teamCount; i++)
+        {
+            cout << "\n";
+            team[i].printStats(option);
+        }
     }
 
     cout << "\n=======================================================\n"
