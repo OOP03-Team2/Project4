@@ -30,7 +30,6 @@ private:
     /*
      * Only applied to Basketball
      */
-
     std::string gb;                    // Games Behind
     float teamPpg = 0, oppPpg, difPpg; // Points Per Game by itself, by opponent and difference
     std::string last10;                // performance by last 10 games
@@ -40,7 +39,7 @@ private:
      * Only applied to American Football
      */
     std::string last5;
-    float pStat[7];
+    float pStat[7]; // xWin, xLoss, and Probability to make Playoffs / win Divison / make Conference Final / make Super Bowls / Chmapion
 
 public:
     Team();

@@ -45,9 +45,13 @@ void displayWelcomeMessage()
     typeWriterEffect("*********************************************************\n", 50);
 }
 
+void displayFootballTable(Table *);
+void displayBasketballTable(Table *);
+void displayNFLTable(Table *);
+
 int main()
 {
-    // Run the Python script and check its exit status
+// Run the Python script and check its exit status
 #ifdef _WIN32 // Windows
     int ret1 = system("./scrap_football.exe");
     int ret2 = system("./scrap_basketball.exe");
@@ -71,21 +75,17 @@ int main()
 
     displayWelcomeMessage();
 
-    ifstream data1("./table_football_current.csv");
-    ifstream data2("./table_football_predicted.csv");
-
-    ifstream data3("./table_basketball_current.csv");
-    ifstream data4("./table_basketball_predicted.csv");
-
-    ifstream data5("./table_handegg_current.csv");
-    ifstream data6("./table_handegg_predicted.csv");
-
+    /*
+     * 1. Initialize Football table
+     */
+    ifstream footData1("./table_football_current.csv");
+    ifstream footData2("./table_football_predicted.csv");
     Table footTable[FOOTBALL];
     for (int i = 0; i < FOOTBALL; i++)
     {
         // 1. Read and add current data
         string line;
-        while (getline(data1, line) && !line.empty())
+        while (getline(footData1, line) && !line.empty())
         {
             if (!isdigit(line[0])) // Skip the line if it is header: Premier League, La Liga, ...
             {
@@ -103,7 +103,7 @@ int main()
         // 2. Read and add predicted data
         line.clear();
         int j = 0;
-        while (getline(data2, line) && !line.empty())
+        while (getline(footData2, line) && !line.empty())
         {
             if (!isdigit(line[0]))
                 continue;
@@ -111,12 +111,17 @@ int main()
         }
     }
 
+    /*
+     * 2. Initialize Basketball table
+     */
+    ifstream basketData1("./table_basketball_current.csv");
+    ifstream basketData2("./table_basketball_predicted.csv");
     Table basketTable[BASKETBALL];
+    // 1. Read and add current data
     for (int i = 0; i < BASKETBALL - 1; i++)
     {
-        // 1. Read and add current data
         string line;
-        while (getline(data3, line) && !line.empty())
+        while (getline(basketData1, line) && !line.empty())
         {
             if (!isdigit(line[0]))
             {
@@ -131,7 +136,7 @@ int main()
     }
     // 2. Read and add predicted data
     string line;
-    while (getline(data4, line) && !line.empty())
+    while (getline(basketData2, line) && !line.empty())
     {
         if (!isdigit(line[0]))
         {
@@ -143,34 +148,39 @@ int main()
         basketTable[3].incrementTeamCount();
     }
 
-    Table handTable[HANDEGG];
+    /*
+     * 3. Initialize NFL table
+     */
+    ifstream nflData1("./table_handegg_current.csv");
+    ifstream nflData2("./table_handegg_predicted.csv");
+    Table nflTable[HANDEGG];
     for (int i = 0; i < HANDEGG - 1; i++)
     {
         string line;
-        while (getline(data5, line) && !line.empty())
+        while (getline(nflData1, line) && !line.empty())
         {
             if (!isdigit(line[0]))
             {
-                handTable[i].setName(line);
+                nflTable[i].setName(line);
                 continue;
             }
 
-            int index = handTable[i].getTeamCount();
-            handTable[i].addHandTeam(index, line);
-            handTable[i].incrementTeamCount();
+            int index = nflTable[i].getTeamCount();
+            nflTable[i].addHandTeam(index, line);
+            nflTable[i].incrementTeamCount();
         }
     }
     line.clear();
-    while (getline(data6, line) && !line.empty())
+    while (getline(nflData2, line) && !line.empty())
     {
         if (!isdigit(line[0]))
         {
-            handTable[11].setName(line);
+            nflTable[11].setName(line);
             continue;
         }
-        int index = handTable[11].getTeamCount();
-        handTable[11].addProb(line, index, 0);
-        handTable[11].incrementTeamCount();
+        int index = nflTable[11].getTeamCount();
+        nflTable[11].addProb(line, index, 0);
+        nflTable[11].incrementTeamCount();
     }
 
     int option = 0;
@@ -187,144 +197,19 @@ int main()
         switch (option)
         {
         case 1:
-            cout << "\nDisplaying football table among Top 5 leagues in Europe......\n";
-            while (true)
-            {
-                cout << "1. Premier League\n"
-                     << "2. Serie A\n"
-                     << "3. La Liga\n"
-                     << "4. Bundesliga\n"
-                     << "5. Ligue 1\n"
-                     << "6. Uefa Champions League\n"
-                     << "7. Go Back\n"
-                     << "Enter your choice (1/2/3/4/5/6/7): ";
-                int league;
-                cin >> league;
-                if (league < 1 || league > 7)
-                {
-                    cout << "Invalid option. Please try again.\n";
-                    continue; // Skip the rest of the loop and prompt again
-                }
-                if (league == 7)
-                    break;
-
-                cout << "\n1. Short\n2. Full\n3. Expected\n4. Predicted(PREMIUM)\n"
-                     << "Enter an option> ";
-                int opt;
-                cin >> opt;
-                if (opt == 1)
-                    footTable[league - 1].printTable('s');
-                else if (opt == 2)
-                    footTable[league - 1].printTable('v');
-                else if (opt == 3)
-                    footTable[league - 1].printTable('x');
-                else if (opt == 4)
-                    footTable[league - 1].printTable('p');
-            }
+            cout << "\nDisplaying European Football tables......\n";
+            displayFootballTable(footTable);
             break;
         case 2:
-            cout << "\nDisplaying NBA table......\n";
-            while (true)
-            {
-                cout << "1. Eastern Conference\n"
-                     << "2. Western Conference\n"
-                     << "3. All\n"
-                     << "4. Predicted(PREMIUM)\n"
-                     << "5. Go Back\n"
-                     << "Enter an option> ";
-                int league;
-                cin >> league;
-                if (league < 1 || league > 5)
-                {
-                    cout << "Invalid option. Please try again.\n";
-                    continue; // Skip the rest of the loop and prompt again
-                }
-                else if (league == 4)
-                {
-                    basketTable[league - 1].printTable('p');
-                    break;
-                }
-                else if (league == 5)
-                    break;
-
-                cout << "\n1. Short\n2. Full\n"
-                     << "Enter an option> ";
-                int opt;
-                cin >> opt;
-                if (opt == 1)
-                    basketTable[league - 1].printTable('s');
-                else if (opt == 2)
-                    basketTable[league - 1].printTable('v');
-            }
+            cout << "\nDisplaying NBA tables......\n";
+            displayBasketballTable(basketTable);
             break;
         case 3:
-            cout << "\nDisplaying NFL table......\n";
-            while (true)
-            {
-                cout << "1. Division\n"
-                     << "2. Conference\n"
-                     << "3. All\n"
-                     << "4. Predicted(PREMIUM)\n"
-                     << "5. Go Back\n"
-                     << "Enter an option> ";
-                int league;
-                cin >> league;
-                if (league < 1 || league > 5)
-                {
-                    cout << "Invalid option. Please try again.\n";
-                    continue;
-                }
-                else if (league == 4)
-                {
-                    handTable[11].printTable('p');
-                    break;
-                }
-                else if (league == 5)
-                    break;
-
-                int opt;
-                if (league == 1)
-                {
-                    cout << "\n1. AFC\n2. NFC\n3. All\n"
-                         << "Enter an option> ";
-                    cin >> opt;
-                    if (opt == 1)
-                        for (int i = 0; i < 4; i++)
-                            handTable[i].printTable('v');
-                    else if (opt == 2)
-                        for (int i = 4; i < 8; i++)
-                            handTable[i].printTable('v');
-                    else if (opt == 3)
-                        for (int i = 0; i < 8; i++)
-                            handTable[i].printTable('v');
-                }
-                else if (league == 2)
-                {
-                    cout << "\n1. AFC\n2. NFC\n3. All\n"
-                         << "Enter an option> ";
-                    cin >> opt;
-                    if (opt == 1)
-                        handTable[8].printTable('v');
-                    else if (opt == 2)
-                        handTable[9].printTable('v');
-                    else if (opt == 3)
-                        for (int i = 8; i < 10; i++)
-                            handTable[i].printTable('v');
-                }
-                else if (league == 3)
-                {
-                    cout << "\n1. Short\n2. Full\n"
-                         << "Enter an option> ";
-                    cin >> opt;
-                    if (opt == 1)
-                        handTable[10].printTable('s');
-                    else if (opt == 2)
-                        handTable[10].printTable('v');
-                }
-            }
+            cout << "\nDisplaying NFL tables......\n";
+            displayNFLTable(nflTable);
             break;
         case 4:
-            cout << "Baseball - N/A\n";
+            cout << "\nDisplaying Baseball tables.....\n";
             break;
         default:
             break;
@@ -332,4 +217,148 @@ int main()
     }
 
     return 0;
+}
+
+void displayFootballTable(Table *footTable)
+{
+    while (true)
+    {
+        cout << "1. Premier League\n"
+             << "2. Serie A\n"
+             << "3. La Liga\n"
+             << "4. Bundesliga\n"
+             << "5. Ligue 1\n"
+             << "6. Uefa Champions League\n"
+             << "7. Go Back\n"
+             << "Enter your choice (1/2/3/4/5/6/7): ";
+        int league;
+        cin >> league;
+        if (league < 1 || league > 7)
+        {
+            cout << "Invalid option. Please try again.\n";
+            continue; // Skip the rest of the loop and prompt again
+        }
+        if (league == 7)
+            break;
+
+        cout << "\n1. Short\n2. Full\n3. Expected\n4. Predicted(PREMIUM)\n"
+             << "Enter your choice (1/2/3/4): ";
+        int opt;
+        cin >> opt;
+        if (opt == 1)
+            footTable[league - 1].printTable('s');
+        else if (opt == 2)
+            footTable[league - 1].printTable('v');
+        else if (opt == 3)
+            footTable[league - 1].printTable('x');
+        else if (opt == 4)
+            footTable[league - 1].printTable('p');
+    }
+}
+
+void displayBasketballTable(Table *basketTable)
+{
+    while (true)
+    {
+        cout << "1. Eastern Conference\n"
+             << "2. Western Conference\n"
+             << "3. All\n"
+             << "4. Predicted(PREMIUM)\n"
+             << "5. Go Back\n"
+             << "Enter your choice(1/2/3/4/5): ";
+        int league;
+        cin >> league;
+        if (league < 1 || league > 5)
+        {
+            cout << "Invalid option. Please try again.\n";
+            continue; // Skip the rest of the loop and prompt again
+        }
+        else if (league == 4)
+        {
+            basketTable[league - 1].printTable('p');
+            break;
+        }
+        else if (league == 5)
+            break;
+
+        cout << "\n1. Short\n2. Full\n"
+             << "Enter your choice(1/2): ";
+        int opt;
+        cin >> opt;
+        if (opt == 1)
+            basketTable[league - 1].printTable('s');
+        else if (opt == 2)
+            basketTable[league - 1].printTable('v');
+    }
+}
+
+void displayNFLTable(Table *nflTable)
+{
+    while (true)
+    {
+        cout << "1. Division\n"
+             << "2. Conference\n"
+             << "3. All\n"
+             << "4. Predicted(PREMIUM)\n"
+             << "5. Go Back\n"
+             << "Enter your choice(1/2/3/4/5): ";
+        int league;
+        cin >> league;
+        if (league < 1 || league > 5)
+        {
+            cout << "Invalid option. Please try again.\n";
+            continue;
+        }
+        else if (league == 4)
+        {
+            nflTable[11].printTable('p');
+            break;
+        }
+        else if (league == 5)
+            break;
+
+        int opt;
+        if (league == 1)
+        {
+            cout << "\n1. AFC\n"
+                 << "2. NFC\n"
+                 << "3. All\n"
+                 << "Enter your choice(1/2/3): ";
+            cin >> opt;
+            if (opt == 1)
+                for (int i = 0; i < 4; i++)
+                    nflTable[i].printTable('v');
+            else if (opt == 2)
+                for (int i = 4; i < 8; i++)
+                    nflTable[i].printTable('v');
+            else if (opt == 3)
+                for (int i = 0; i < 8; i++)
+                    nflTable[i].printTable('v');
+        }
+        else if (league == 2)
+        {
+            cout << "\n1. AMERICAN\n"
+                 << "2. NATIONAL\n"
+                 << "3. All\n"
+                 << "Enter your choice(1/2/3): ";
+            cin >> opt;
+            if (opt == 1)
+                nflTable[8].printTable('v');
+            else if (opt == 2)
+                nflTable[9].printTable('v');
+            else if (opt == 3)
+                for (int i = 8; i < 10; i++)
+                    nflTable[i].printTable('v');
+        }
+        else if (league == 3)
+        {
+            cout << "\n1. Short\n2. Full\n"
+                 << "Enter your choice(1/2): ";
+            cin >> opt;
+            if (opt == 1)
+                nflTable[10].printTable('s');
+            else if (opt == 2)
+                nflTable[10].printTable('v');
+        }
+    }
 }

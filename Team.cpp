@@ -8,9 +8,7 @@ Team::Team()
 {
     int count = sizeof(predictedStat) / sizeof(predictedStat[0]);
     for (int i = 0; i < count; i++)
-    {
         predictedStat[i] = -1.f;
-    }
 }
 
 Team::~Team()
