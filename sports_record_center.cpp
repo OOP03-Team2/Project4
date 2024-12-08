@@ -48,28 +48,28 @@ void displayWelcomeMessage()
 int main()
 {
     // Run the Python script and check its exit status
-    // #ifdef _WIN32 // Windows
-    //     int ret1 = system(".\scrap_football.exe");
-    //     int ret2 = system(".\scrap_basketball.exe");
-    //     int ret3 = system(".\scrap_handegg.exe");
-    // #elif __linux__ // Linux
-    //     int ret1 = system("./scrap_football");
-    //     int ret2 = system("./scrap_basketball");
-    //     int ret3 = system("./scrap_handegg");
-    // #else
-    //     cerr << "Unsupported OS!" << endl;
-    //     return 1;
-    // #endif
-    //     if (ret1 || ret2 || ret3)
-    //     {
-    //         cout << "Python script failed with exit code: " << ret1 << endl;
-    //         cout << "Python script failed with exit code: " << ret2 << endl;
-    //         cout << "Python script failed with exit code: " << ret3 << endl;
-    //         return 1;
-    //     }
-    //     cout << "Python script executed successfully!" << endl;
+#ifdef _WIN32 // Windows
+    int ret1 = system(".\scrap_football.exe");
+    int ret2 = system(".\scrap_basketball.exe");
+    int ret3 = system(".\scrap_handegg.exe");
+#elif __linux__ // Linux
+    int ret1 = system("./scrap_football");
+    int ret2 = system("./scrap_basketball");
+    int ret3 = system("./scrap_handegg");
+#else
+    cerr << "Unsupported OS!" << endl;
+    return 1;
+#endif
+    if (ret1 || ret2 || ret3)
+    {
+        cout << "Python script failed with exit code: " << ret1 << endl;
+        cout << "Python script failed with exit code: " << ret2 << endl;
+        cout << "Python script failed with exit code: " << ret3 << endl;
+        return 1;
+    }
+    cout << "Python script executed successfully!" << endl;
 
-    // displayWelcomeMessage();
+    displayWelcomeMessage();
 
     ifstream data1("./table_football_current.csv");
     ifstream data2("./table_football_predicted.csv");
