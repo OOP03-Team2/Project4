@@ -49,9 +49,9 @@ int main()
 {
     // Run the Python script and check its exit status
 #ifdef _WIN32 // Windows
-    int ret1 = system(".\scrap_football.exe");
-    int ret2 = system(".\scrap_basketball.exe");
-    int ret3 = system(".\scrap_handegg.exe");
+    int ret1 = system("./scrap_football.exe");
+    int ret2 = system("./scrap_basketball.exe");
+    int ret3 = system("./scrap_handegg.exe");
 #elif __linux__ // Linux
     int ret1 = system("./scrap_football");
     int ret2 = system("./scrap_basketball");
